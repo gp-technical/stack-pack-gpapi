@@ -1,0 +1,52 @@
+{
+  "name": "@gp-technical/stack-redux-api",
+  "description": "Provides the server-side websocket connection that allows redux actions dispatched from a client app to be processed by the api",
+  "version": "0.4.17",
+  "author": "GoodPractice",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/gp-technical/stack-redux-api",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gp-technical/stack-redux-api"
+  },
+  "main": "build/index.js",
+  "scripts": {
+    "build": "babel --presets latest,stage-2 -d build/ src/",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.7.27",
+    "cookie-parser": "^1.4.3",
+    "eidetic": "^1.0.0",
+    "express": "^4.15.2",
+    "filesize": "^3.5.4",
+    "fs-extra": "^2.0.0",
+    "humps": "^1.1.0",
+    "klaw": "^1.3.1",
+    "moment": "^2.18.1",
+    "mongodb": "^2.2.26",
+    "mongoskin": "^2.1.0",
+    "serialijse": "0.0.19",
+    "socket.io": "^1.4.8",
+    "unirest": "^0.5.1",
+    "uuid": "^3.0.1",
+    "winston": "^2.3.1",
+    "xml-crypto": "^0.8.4",
+    "xml-encryption": "^0.9.0",
+    "xml2js": "^0.4.17",
+    "xmlbuilder": "^8.2.2",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.23"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.16.0",
+    "babel-eslint": "^7.0.0",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-stage-2": "^6.17.0",
+    "eslint": "^3.6.1",
+    "eslint-config-standard": "^6.1.0",
+    "eslint-plugin-promise": "^3.3.0",
+    "eslint-plugin-standard": "^2.0.0"
+  }
+}

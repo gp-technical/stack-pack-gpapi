@@ -1,0 +1,10 @@
+node_modules
+build
+.env
+server/src/files/*
+*.env
+*.log
+*.zip
+*.xlsx
+*.sh
+*.db
