@@ -1,6 +1,6 @@
 {
-  "name": "@gp-technical/stack-pack-gpapi",
-  "description": "A stack package that provides secure access to the main GP API",
+  "name": "stack-pack-gpapi",
+  "description": "A GP stack package that provides secure access to the main GP API",
   "version": "0.1.0",
   "author": "GoodPractice",
   "license": "UNLICENSED",
@@ -15,7 +15,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@gp-technical/stack-redux-api": "^0.4.18",
+    "stack-pack-request": "^0.1.0",
     "winston": "^2.3.1"
   },
   "devDependencies": {

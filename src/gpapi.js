@@ -1,4 +1,4 @@
-import { request } from '@gp-technical/stack-redux-api'
+import { request } from 'stack-pack-request'
 import crypto from 'crypto'
 import winston from 'winston'
 import util from 'util'
