@@ -1,13 +1,13 @@
 {
-  "name": "@gp-technical/stack-redux-api",
-  "description": "Provides the server-side websocket connection that allows redux actions dispatched from a client app to be processed by the api",
-  "version": "0.4.17",
+  "name": "@gp-technical/stack-pack-gpapi",
+  "description": "A stack package that provides secure access to the main GP API",
+  "version": "0.1.0",
   "author": "GoodPractice",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/gp-technical/stack-redux-api",
+  "homepage": "https://github.com/gp-technical/stack-pack-gpapi",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gp-technical/stack-redux-api"
+    "url": "https://github.com/gp-technical/stack-pack-gpapi"
   },
   "main": "build/index.js",
   "scripts": {
@@ -15,28 +15,8 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "aws-sdk": "^2.7.27",
-    "cookie-parser": "^1.4.3",
-    "eidetic": "^1.0.0",
-    "express": "^4.15.2",
-    "filesize": "^3.5.4",
-    "fs-extra": "^2.0.0",
-    "humps": "^1.1.0",
-    "klaw": "^1.3.1",
-    "moment": "^2.18.1",
-    "mongodb": "^2.2.26",
-    "mongoskin": "^2.1.0",
-    "serialijse": "0.0.19",
-    "socket.io": "^1.4.8",
-    "unirest": "^0.5.1",
-    "uuid": "^3.0.1",
-    "winston": "^2.3.1",
-    "xml-crypto": "^0.8.4",
-    "xml-encryption": "^0.9.0",
-    "xml2js": "^0.4.17",
-    "xmlbuilder": "^8.2.2",
-    "xmldom": "^0.1.27",
-    "xpath": "0.0.23"
+    "@gp-technical/stack-redux-api": "^0.4.18",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
