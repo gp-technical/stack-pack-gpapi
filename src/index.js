@@ -3,10 +3,6 @@ import crypto from 'crypto'
 import winston from 'winston'
 import util from 'util'
 
-const promises = {}
-const promisePush = (key, timeout) => new Promise((resolve, reject) => promises[key] = {resolve, reject, timeout})
-const promisePop = key => [promises[key], delete promises[key]][0]
-
 const attachProxy = (opts) => {
   const {app, apiUrl} = opts
   app.use('/gpapi', async (req, res, next) => {
@@ -40,7 +36,7 @@ const ensureApplicationToken = async (opts) => {
   const {app} = opts
   if (app.get('application-token')) return
   winston.info('GP API:', await apiCheck())
-  await requestCallback(opts)
+  await setApplicationToken(opts)
 }
 
 const ensureUserToken = async (opts) => {
@@ -55,7 +51,7 @@ const ensureUserToken = async (opts) => {
         await setUserToken(opts)
       } catch (err) {
         if (err.Name === 'NoApplicationForToken') {
-          await requestCallback(opts)
+          await setApplicationToken(opts)
         } else {
           throw err
         }
@@ -70,42 +66,11 @@ const getQueryString = (url) => {
   return (url.indexOf('?') > -1) ? `?${url.substr(url.indexOf('?') + 1)}` : ''
 }
 
-const attachCallback = (opts) => {
-  const {app, keyPublic} = opts
-
-  app.get('/security/ping', async (req, res) => {
-    res.send(`The gp-api security callback is mounted : ${new Date().toLocaleString('en-GB')}`)
-  })
-
-  app.post('/security/login/application/callback', async (req, res) => {
-    const {resolve, reject, timeout} = promisePop(keyPublic)
-    clearTimeout(timeout)
-    try {
-      await processCallback(opts, req.body)
-      resolve(setUserToken(opts))
-      res.sendStatus(200)
-    } catch (inner) {
-      const err = new Error('Failed to process GP API callback.')
-      err.inner = inner
-      winston.error(util.inspect(err))
-      res.sendStatus(500)
-      reject(err)
-    }
-  })
-}
-
-const requestCallback = async ({apiUrl, keyPublic}) => {
-  await request.get(`${apiUrl}/security/request-callback/application/${keyPublic}`)
-  const timeout = setTimeout(() => {
-    promisePop(keyPublic).reject('GP API: The callback request timed out. Check the GP API server output')
-  }, 5000)
-  return promisePush(keyPublic, timeout)
-}
-
-const processCallback = async ({app, apiUrl, keyPublic, keyPrivate}, {iv, token}) => {
+const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
+  const {IV, Token} = await request.get(`${apiUrl}/security/encryptedToken/application/${keyPublic}`)
   const secret = new Buffer(keyPrivate, 'utf-8')
-  const vector = new Buffer(iv, 'base64')
-  const encrypted = new Buffer(token, 'base64')
+  const vector = new Buffer(IV, 'base64')
+  const encrypted = new Buffer(Token, 'base64')
   const decipher = crypto.createDecipheriv('des3', secret, vector)
   let decrypted = decipher.update(encrypted, 'binary', 'ascii')
   decrypted += decipher.final('ascii')
@@ -164,8 +129,7 @@ const handshake = async (opts) => {
     attachCheck(opts)
     attachGetProfileFromToken(opts)
     attachProxy(opts)
-    attachCallback(opts)
-    return await requestCallback(opts)
+    return await setApplicationToken(opts)
   } catch (inner) {
     const err = new Error('A call to the GP API has failed')
     err.inner = inner
