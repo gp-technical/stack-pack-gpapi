@@ -69,6 +69,7 @@ const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
   const health = await apiCheck()
   winston.info(`GP API: Health Check
       - api-url  : ${health.url}
+      - api-key  : ${keyPublic}
       - api-ping : ${health.ping}
       - db-check : ${health.db}`)
   const {IV, Token} = await request.get(`${apiUrl}/security/encryptedToken/application/${keyPublic}`)
