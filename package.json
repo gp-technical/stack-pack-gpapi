@@ -1,5 +1,5 @@
 {
-  "name": "stack-pack-gpapi",
+  "name": "@gp-technical/stack-pack-gpapi",
   "description": "A GP stack package that provides secure access to the main GP API",
   "version": "0.1.4",
   "author": "GoodPractice",
@@ -15,7 +15,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "stack-pack-request": "^0.1.2",
+    "@gp-technical/stack-pack-request": "^0.1.2",
     "winston": "^2.3.1"
   },
   "devDependencies": {
