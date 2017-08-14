@@ -89,7 +89,7 @@ const setUserToken = async ({app, apiUrl, keyAdmin}) => {
   const payload = {ApplicationToken: app.get('application-token')}
   const {token} = await request.post(url, payload)
   winston.info(`GP API
-      - user-token    : ${token}`)
+      - user-token : ${token}`)
   app.set('user-token', token)
   return token
 }
