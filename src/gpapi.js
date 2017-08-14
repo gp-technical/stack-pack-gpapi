@@ -67,11 +67,6 @@ const getQueryString = (url) => {
 
 const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
   const health = await apiCheck()
-  winston.info(`GP API: Health Check
-      - api-url  : ${health.url}
-      - api-key  : ${keyPublic}
-      - api-ping : ${health.ping}
-      - db-check : ${health.db}`)
   const {IV, Token} = await request.get(`${apiUrl}/security/encryptedToken/application/${keyPublic}`)
   const secret = new Buffer(keyPrivate, 'utf-8')
   const vector = new Buffer(IV, 'base64')
@@ -80,7 +75,12 @@ const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
   let decrypted = decipher.update(encrypted, 'binary', 'ascii')
   decrypted += decipher.final('ascii')
   const application = await request.get(`${apiUrl}/security/login/application/${keyPublic}/${decrypted}`)
-  winston.info(`GP API: App Authenticated: Token = ${application.Token}`)
+  winston.info(`GP API
+      - api-url    : ${health.url}
+      - api-key    : ${keyPublic}
+      - api-ping   : ${health.ping}
+      - db-check   : ${health.db}
+      - app-token  : ${application.Token}`)
   app.set('application-token', application.Token)
 }
 
@@ -88,7 +88,8 @@ const setUserToken = async ({app, apiUrl, keyAdmin}) => {
   var url = `${apiUrl}/security/login/application/gpapi`
   const payload = {ApplicationToken: app.get('application-token')}
   const {token} = await request.post(url, payload)
-  winston.info(`GP API: User Authenticated: Token = ${token}`)
+  winston.info(`GP API
+      - user-token    : ${token}`)
   app.set('user-token', token)
   return token
 }
