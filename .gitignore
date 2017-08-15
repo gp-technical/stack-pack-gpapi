@@ -1,10 +1,5 @@
-node_modules
 build
-.env
-server/src/files/*
+node_modules/
+*.log*
+*.swp
 *.env
-*.log
-*.zip
-*.xlsx
-*.sh
-*.db
