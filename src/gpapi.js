@@ -35,7 +35,7 @@ const attachProxy = (opts) => {
 const ensureApplicationToken = async (opts) => {
   const {app} = opts
   if (app.get('application-token')) return
-  await setApplicationToken(opts)
+  await setTokens(opts)
 }
 
 const ensureUserToken = async (opts) => {
@@ -47,10 +47,10 @@ const ensureUserToken = async (opts) => {
   } catch (err) {
     if (err.Name === 'NoUserForToken') {
       try {
-        await setUserToken(opts)
+        await resetUserToken(opts)
       } catch (err) {
         if (err.Name === 'NoApplicationForToken') {
-          await setApplicationToken(opts)
+          await setTokens(opts)
         } else {
           throw err
         }
@@ -65,8 +65,20 @@ const getQueryString = (url) => {
   return (url.indexOf('?') > -1) ? `?${url.substr(url.indexOf('?') + 1)}` : ''
 }
 
-const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
+const setTokens = async (opts) => {
   const health = await apiCheck()
+  const applicationToken = await setApplicationToken(opts)
+  const userToken = await setUserToken(opts)
+  winston.info(`GP API
+      - api-url     : ${health.url}
+      - api-key     : ${opts.keyPublic}
+      - api-ping    : ${health.ping}
+      - db-check    : ${health.db}
+      - app-token   : ${applicationToken}
+      - user-token  : ${userToken}`)
+}
+
+const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
   const {IV, Token} = await request.get(`${apiUrl}/security/encryptedToken/application/${keyPublic}`)
   const secret = new Buffer(keyPrivate, 'utf-8')
   const vector = new Buffer(IV, 'base64')
@@ -74,24 +86,23 @@ const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
   const decipher = crypto.createDecipheriv('des3', secret, vector)
   let decrypted = decipher.update(encrypted, 'binary', 'ascii')
   decrypted += decipher.final('ascii')
+
   const application = await request.get(`${apiUrl}/security/login/application/${keyPublic}/${decrypted}`)
-  winston.info(`GP API
-      - api-url    : ${health.url}
-      - api-key    : ${keyPublic}
-      - api-ping   : ${health.ping}
-      - db-check   : ${health.db}
-      - app-token  : ${application.Token}`)
   app.set('application-token', application.Token)
+  return app.get('application-token')
 }
 
 const setUserToken = async ({app, apiUrl, keyAdmin}) => {
   var url = `${apiUrl}/security/login/application/gpapi`
   const payload = {ApplicationToken: app.get('application-token')}
   const {token} = await request.post(url, payload)
-  winston.info(`GP API
-      - user-token : ${token}`)
   app.set('user-token', token)
-  return token
+  return app.get('user-token')
+}
+
+const resetUserToken = async (opts) => {
+  const token = setUserToken(opts)
+  winston.info(`GP API - reset user-token = ${token}`)
 }
 
 var apiCheck = undefined
@@ -132,7 +143,7 @@ const handshake = async (opts) => {
     attachCheck(opts)
     attachGetProfileFromToken(opts)
     attachProxy(opts)
-    return await setApplicationToken(opts)
+    return await setTokens(opts)
   } catch (inner) {
     const err = new Error('A call to the GP API has failed')
     err.inner = inner

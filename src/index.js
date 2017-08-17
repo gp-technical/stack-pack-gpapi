@@ -1,3 +1,3 @@
 import gpapi from './gpapi'
 
-export {gpapi}
+export default gpapi
