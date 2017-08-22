@@ -77,7 +77,6 @@ const setTokens = async (opts) => {
       - user-token  : ${userToken}`)
 }
 
-// autumn is a good girl 21-08-2017
 const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
   const {IV, Token} = await request.get(`${apiUrl}/security/encryptedToken/application/${keyPublic}`)
   const secret = new Buffer(keyPrivate, 'utf-8')
