@@ -14,11 +14,30 @@
     "build": "babel --presets latest,stage-2 -d build/ src/",
     "prepublishOnly": "npm run build"
   },
+  "swapDep": {
+    "local": {
+      "dep": {
+        "stack-pack-request": "file:../stack-pack-request"
+      },
+      "dev": {
+        "@gp-technical/stack-pack-dev": "file:../stack-pack-dev"
+      }
+    },
+    "published": {
+      "dep": {
+        "stack-pack-request": "0.1.2"
+      },
+      "dev": {
+        "@gp-technical/stack-pack-dev": "0.1.0"
+      }
+    }
+  },
   "dependencies": {
-    "stack-pack-request": "^0.1.2",
+    "stack-pack-request": "0.1.2",
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "@gp-technical/stack-pack-dev": "0.1.0",
     "babel-cli": "^6.16.0",
     "babel-core": "^6.16.0",
     "babel-eslint": "^7.0.0",
