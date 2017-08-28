@@ -23,13 +23,13 @@
     },
     "published": {
       "dep": {
-        "stack-pack-request": "1.0.1"
+        "stack-pack-request": "1.1.1"
       },
       "dev": {}
     }
   },
   "dependencies": {
-    "stack-pack-request": "1.0.1",
+    "stack-pack-request": "1.1.1",
     "winston": "^2.3.1"
   },
   "devDependencies": {
