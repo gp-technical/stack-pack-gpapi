@@ -5,6 +5,11 @@ import util from 'util'
 
 const attachProxy = (opts) => {
   const {app, apiUrl} = opts
+
+  app.use('/gpapi/ping', async (req, res, next) => {
+    res.send(`The GPAPI proxy is alive and relaying to: ${apiUrl}`)
+  })
+
   app.use('/gpapi', async (req, res, next) => {
     try {
       await ensureApplicationToken(opts)
@@ -18,6 +23,7 @@ const attachProxy = (opts) => {
         case 'GET':
           url += `${getQueryString(req.url)}`
           const resGet = await request.get(url)
+          console.info('resGet', resGet)
           res.json(resGet)
           break
         default:
@@ -85,7 +91,6 @@ const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
   const decipher = crypto.createDecipheriv('des3', secret, vector)
   let decrypted = decipher.update(encrypted, 'binary', 'ascii')
   decrypted += decipher.final('ascii')
-
   const application = await request.get(`${apiUrl}/security/login/application/${keyPublic}/${decrypted}`)
   app.set('application-token', application.Token)
   return app.get('application-token')
@@ -94,13 +99,13 @@ const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
 const setUserToken = async ({app, apiUrl, keyAdmin}) => {
   var url = `${apiUrl}/security/login/application/gpapi`
   const payload = {ApplicationToken: app.get('application-token')}
-  const {token} = await request.post(url, payload)
-  app.set('user-token', token)
-  return app.get('user-token')
+  const result = await request.post(url, payload)
+  app.set('user-token', result.token)
+  return result.token
 }
 
 const resetUserToken = async (opts) => {
-  const token = setUserToken(opts)
+  const token = await setUserToken(opts)
   winston.info(`GP API - reset user-token = ${token}`)
 }
 
