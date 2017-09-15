@@ -3,8 +3,8 @@ import crypto from 'crypto'
 import winston from 'winston'
 import util from 'util'
 
-const attachProxy = (opts) => {
-  const {app, apiUrl} = opts
+const attachProxy = opts => {
+  const { app, apiUrl } = opts
 
   app.use('/gpapi/ping', async (req, res, next) => {
     res.send(`The GPAPI proxy is alive and relaying to: ${apiUrl}`)
@@ -23,7 +23,6 @@ const attachProxy = (opts) => {
         case 'GET':
           url += `${getQueryString(req.url)}`
           const resGet = await request.get(url)
-          console.info('resGet', resGet)
           res.json(resGet)
           break
         default:
@@ -38,16 +37,16 @@ const attachProxy = (opts) => {
   })
 }
 
-const ensureApplicationToken = async (opts) => {
-  const {app} = opts
+const ensureApplicationToken = async opts => {
+  const { app } = opts
   if (app.get('application-token')) return
   await setTokens(opts)
 }
 
-const ensureUserToken = async (opts) => {
-  const {app, apiUrl} = opts
+const ensureUserToken = async opts => {
+  const { app, apiUrl } = opts
   var url = `${apiUrl}/security/validate/user`
-  const payload = {ApplicationToken: app.get('application-token'), UserToken: app.get('user-token')}
+  const payload = { ApplicationToken: app.get('application-token'), UserToken: app.get('user-token') }
   try {
     await request.post(url, payload)
   } catch (err) {
@@ -67,11 +66,11 @@ const ensureUserToken = async (opts) => {
   }
 }
 
-const getQueryString = (url) => {
-  return (url.indexOf('?') > -1) ? `?${url.substr(url.indexOf('?') + 1)}` : ''
+const getQueryString = url => {
+  return url.indexOf('?') > -1 ? `?${url.substr(url.indexOf('?') + 1)}` : ''
 }
 
-const setTokens = async (opts) => {
+const setTokens = async opts => {
   const health = await apiCheck()
   const applicationToken = await setApplicationToken(opts)
   const userToken = await setUserToken(opts)
@@ -83,8 +82,8 @@ const setTokens = async (opts) => {
       - user-token  : ${userToken}`)
 }
 
-const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
-  const {IV, Token} = await request.get(`${apiUrl}/security/encryptedToken/application/${keyPublic}`)
+const setApplicationToken = async ({ app, apiUrl, keyPublic, keyPrivate }) => {
+  const { IV, Token } = await request.get(`${apiUrl}/security/encryptedToken/application/${keyPublic}`)
   const secret = new Buffer(keyPrivate, 'utf-8')
   const vector = new Buffer(IV, 'base64')
   const encrypted = new Buffer(Token, 'base64')
@@ -96,26 +95,26 @@ const setApplicationToken = async ({app, apiUrl, keyPublic, keyPrivate}) => {
   return app.get('application-token')
 }
 
-const setUserToken = async ({app, apiUrl, keyAdmin}) => {
+const setUserToken = async ({ app, apiUrl, keyAdmin }) => {
   var url = `${apiUrl}/security/login/application/gpapi`
-  const payload = {ApplicationToken: app.get('application-token')}
-  const result = await request.post(url, payload)
-  app.set('user-token', result.token)
-  return result.token
+  const payload = { ApplicationToken: app.get('application-token') }
+  const { token } = await request.post(url, payload)
+  app.set('user-token', token)
+  return token
 }
 
-const resetUserToken = async (opts) => {
+const resetUserToken = async opts => {
   const token = await setUserToken(opts)
   winston.info(`GP API - reset user-token = ${token}`)
 }
 
 var apiCheck = undefined
-const attachCheck = async ({apiUrl}) => {
+const attachCheck = async ({ apiUrl }) => {
   apiCheck = async () => {
     return {
       url: apiUrl,
-      ping: await request.get(`${apiUrl}/`),
-      db: await request.get(`${apiUrl}/db-check`)
+      ping: await request.get(`${apiUrl}/`, 3000),
+      db: await request.get(`${apiUrl}/db-check`, 10000)
     }
   }
 }
@@ -125,14 +124,14 @@ const check = async () => {
 }
 
 var apiGetProfileFromToken = undefined
-const attachGetProfileFromToken = async ({apiUrl}) => {
+const attachGetProfileFromToken = async ({ apiUrl }) => {
   apiGetProfileFromToken = async (app, userToken) => {
     const user = await request.get(`${apiUrl}/security/login/user/token/${userToken}`)
-    const profile = {nameId: user.Id, firstname: user.FirstName, lastname: user.LastName, email: user.Email}
+    const profile = { nameId: user.Id, firstname: user.FirstName, lastname: user.LastName, email: user.Email }
     if (user.SubscriptionId) {
       const hierarchy = await get(`/hierarchy/subscription/${user.SubscriptionId}`)
-      profile.client = {id: hierarchy.ClientId, name: hierarchy.ClientName}
-      profile.subscription = {id: hierarchy.SubscriptionId, name: hierarchy.SubscriptionName}
+      profile.client = { id: hierarchy.ClientId, name: hierarchy.ClientName }
+      profile.subscription = { id: hierarchy.SubscriptionId, name: hierarchy.SubscriptionName }
     }
     return profile
   }
@@ -142,7 +141,7 @@ const getProfileFromToken = async (app, userToken) => {
   return apiGetProfileFromToken(app, userToken)
 }
 
-const handshake = async (opts) => {
+const handshake = async opts => {
   try {
     attachCheck(opts)
     attachGetProfileFromToken(opts)
@@ -155,18 +154,18 @@ const handshake = async (opts) => {
   }
 }
 
-const get = async (path) => {
+const get = async (path, timeout) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
-  return await request.get(`${process.env.API_ROOT}/gpapi/${path}`)
+  return await request.get(`${process.env.API_ROOT}/gpapi/${path}`, timeout)
 }
 
-const post = async (path, payload) => {
+const post = async (path, payload, timeout) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
-  return await request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload)
+  return await request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, timeout)
 }
 
-export default {handshake, get, post, check, getProfileFromToken}
+export default { handshake, get, post, check, getProfileFromToken }
