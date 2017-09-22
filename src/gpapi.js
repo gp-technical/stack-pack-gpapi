@@ -3,6 +3,8 @@ import crypto from 'crypto'
 import winston from 'winston'
 import util from 'util'
 
+var handshakeRequired = true
+
 const attachProxy = opts => {
   const { app, apiUrl } = opts
 
@@ -127,7 +129,7 @@ var apiGetProfileFromToken = undefined
 const attachGetProfileFromToken = async ({ apiUrl }) => {
   apiGetProfileFromToken = async (app, userToken) => {
     const user = await request.get(`${apiUrl}/security/login/user/token/${userToken}`)
-    const profile = { nameId: user.Id, firstname: user.FirstName, lastname: user.LastName, email: user.Email }
+    const profile = { nameId: user.Id, firstname: user.FirstName, lastname: user.LastName, email: user.Email, token: userToken }
     if (user.SubscriptionId) {
       const hierarchy = await get(`/hierarchy/subscription/${user.SubscriptionId}`)
       profile.client = { id: hierarchy.ClientId, name: hierarchy.ClientName }
@@ -141,12 +143,17 @@ const getProfileFromToken = async (app, userToken) => {
   return apiGetProfileFromToken(app, userToken)
 }
 
+const requiresHandshake = () => {
+  return handshakeRequired === true
+}
+
 const handshake = async opts => {
   try {
     attachCheck(opts)
     attachGetProfileFromToken(opts)
     attachProxy(opts)
-    return await setTokens(opts)
+    await setTokens(opts)
+    handshakeRequired = false
   } catch (inner) {
     const err = new Error('A call to the GP API has failed')
     err.inner = inner
@@ -168,4 +175,4 @@ const post = async (path, payload, timeout) => {
   return await request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, timeout)
 }
 
-export default { handshake, get, post, check, getProfileFromToken }
+export default { handshake, requiresHandshake, get, post, check, getProfileFromToken }
