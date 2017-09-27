@@ -29,7 +29,7 @@
     }
   },
   "dependencies": {
-    "stack-pack-request": "1.1.8",
+    "stack-pack-request": "file:../stack-pack-request",
     "winston": "^2.3.1"
   },
   "devDependencies": {
