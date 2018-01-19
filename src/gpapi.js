@@ -115,8 +115,8 @@ const attachCheck = async ({ apiUrl }) => {
   apiCheck = async () => {
     return {
       url: apiUrl,
-      ping: await request.get(`${apiUrl}/`, 3000),
-      db: await request.get(`${apiUrl}/db-check`, 10000)
+      ping: await request.get(`${apiUrl}/`, { timeout: 3000 }),
+      db: await request.get(`${apiUrl}/db-check`, { timeout: 10000 })
     }
   }
 }
@@ -165,14 +165,14 @@ const get = async (path, timeout) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
-  return await request.get(`${process.env.API_ROOT}/gpapi/${path}`, timeout)
+  return await request.get(`${process.env.API_ROOT}/gpapi/${path}`, { timeout })
 }
 
 const post = async (path, payload, timeout) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
-  return await request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, timeout)
+  return await request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, { timeout })
 }
 
 export default { handshake, requiresHandshake, get, post, check, getProfileFromToken }
