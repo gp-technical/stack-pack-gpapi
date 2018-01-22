@@ -86,9 +86,6 @@ const setTokens = async opts => {
 
 const setApplicationToken = async ({ app, apiUrl, keyPublic, keyPrivate }) => {
   const { IV, Token } = await request.get(`${apiUrl}/security/encryptedToken/application/${keyPublic}`)
-  console.info('IV', IV)
-  console.info('Token', Token)
-
   const secret = new Buffer(keyPrivate, 'utf-8')
   const vector = new Buffer(IV, 'base64')
   const encrypted = new Buffer(Token, 'base64')
