@@ -115,8 +115,8 @@ const attachCheck = async ({ apiUrl }) => {
   apiCheck = async () => {
     return {
       url: apiUrl,
-      ping: await request.get(`${apiUrl}/`, { timeout: 3000 }),
-      db: await request.get(`${apiUrl}/db-check`, { timeout: 10000 })
+      ping: await request.get(`${apiUrl}/`, 3000),
+      db: await request.get(`${apiUrl}/db-check`, 10000)
     }
   }
 }
