@@ -161,18 +161,18 @@ const handshake = async opts => {
   }
 }
 
-const get = async (path, timeout) => {
+const get = async (path, opts) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
-  return await request.get(`${process.env.API_ROOT}/gpapi/${path}`, timeout)
+  return await request.get(`${process.env.API_ROOT}/gpapi/${path}`, opts)
 }
 
-const post = async (path, payload, timeout) => {
+const post = async (path, payload, opts) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
-  return await request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, timeout)
+  return await request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, opts)
 }
 
 export default { handshake, requiresHandshake, get, post, check, getProfileFromToken }
