@@ -115,8 +115,8 @@ const attachCheck = async ({ apiUrl }) => {
   apiCheck = async () => {
     return {
       url: apiUrl,
-      ping: await request.get(`${apiUrl}/`, parseInt(process.env.GPAPI_TIMEOUT) || 3000),
-      db: await request.get(`${apiUrl}/db-check`, parseInt(process.env.GPAPI_TIMEOUT) || 10000)
+      ping: await request.get(`${apiUrl}/`, { timeout: parseInt(process.env.GPAPI_TIMEOUT) || 3000 }),
+      db: await request.get(`${apiUrl}/db-check`, { timeout: parseInt(process.env.GPAPI_TIMEOUT) || 10000 })
     }
   }
 }
