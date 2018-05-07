@@ -48,7 +48,10 @@ const ensureApplicationToken = async opts => {
 const ensureUserToken = async opts => {
   const { app, apiUrl } = opts
   var url = `${apiUrl}/security/validate/user`
-  const payload = { ApplicationToken: app.get('application-token'), UserToken: app.get('user-token') }
+  const payload = {
+    ApplicationToken: app.get('application-token'),
+    UserToken: app.get('user-token')
+  }
   try {
     await request.post(url, payload)
   } catch (err) {
@@ -85,14 +88,18 @@ const setTokens = async opts => {
 }
 
 const setApplicationToken = async ({ app, apiUrl, keyPublic, keyPrivate }) => {
-  const { IV, Token } = await request.get(`${apiUrl}/security/encryptedToken/application/${keyPublic}`)
-  const secret = new Buffer(keyPrivate, 'utf-8')
-  const vector = new Buffer(IV, 'base64')
-  const encrypted = new Buffer(Token, 'base64')
+  const { IV, Token } = await request.get(
+    `${apiUrl}/security/encryptedToken/application/${keyPublic}`
+  )
+  const secret = Buffer.from(keyPrivate, 'utf-8')
+  const vector = Buffer.from(IV, 'base64')
+  const encrypted = Buffer.from(Token, 'base64')
   const decipher = crypto.createDecipheriv('des3', secret, vector)
   let decrypted = decipher.update(encrypted, 'binary', 'ascii')
   decrypted += decipher.final('ascii')
-  const application = await request.get(`${apiUrl}/security/login/application/${keyPublic}/${decrypted}`)
+  const application = await request.get(
+    `${apiUrl}/security/login/application/${keyPublic}/${decrypted}`
+  )
   app.set('application-token', application.Token)
   return app.get('application-token')
 }
@@ -110,26 +117,36 @@ const resetUserToken = async opts => {
   winston.info(`GP API - reset user-token = ${token}`)
 }
 
-var apiCheck = undefined
+var apiCheck
 const attachCheck = async ({ apiUrl }) => {
   apiCheck = async () => {
     return {
       url: apiUrl,
-      ping: await request.get(`${apiUrl}/`, { timeout: parseInt(process.env.GPAPI_TIMEOUT) || 3000 }),
-      db: await request.get(`${apiUrl}/db-check`, { timeout: parseInt(process.env.GPAPI_TIMEOUT) || 10000 })
+      ping: await request.get(`${apiUrl}/`, {
+        timeout: parseInt(process.env.GPAPI_TIMEOUT) || 3000
+      }),
+      db: await request.get(`${apiUrl}/db-check`, {
+        timeout: parseInt(process.env.GPAPI_TIMEOUT) || 10000
+      })
     }
   }
 }
 
 const check = async () => {
-  return await apiCheck()
+  return apiCheck()
 }
 
-var apiGetProfileFromToken = undefined
+var apiGetProfileFromToken
 const attachGetProfileFromToken = async ({ apiUrl }) => {
   apiGetProfileFromToken = async (app, userToken) => {
     const user = await request.get(`${apiUrl}/security/login/user/token/${userToken}`)
-    const profile = { nameId: user.Id, firstname: user.FirstName, lastname: user.LastName, email: user.Email, token: userToken }
+    const profile = {
+      nameId: user.Id,
+      firstname: user.FirstName,
+      lastname: user.LastName,
+      email: user.Email,
+      token: userToken
+    }
     if (user.SubscriptionId) {
       const hierarchy = await get(`/hierarchy/subscription/${user.SubscriptionId}`)
       profile.client = { id: hierarchy.ClientId, name: hierarchy.ClientName }
@@ -165,14 +182,14 @@ const get = async (path, opts) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
-  return await request.get(`${process.env.API_ROOT}/gpapi/${path}`, opts)
+  return request.get(`${process.env.API_ROOT}/gpapi/${path}`, opts)
 }
 
 const post = async (path, payload, opts) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
-  return await request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, opts)
+  return request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, opts)
 }
 
 export default { handshake, requiresHandshake, get, post, check, getProfileFromToken }

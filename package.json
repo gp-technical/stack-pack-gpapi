@@ -11,7 +11,8 @@
   },
   "main": "build/index.js",
   "scripts": {
-    "build": "babel --presets latest,stage-2 -d build/ src/",
+    "lint": "eslint *.js src",
+    "build": "babel --presets env,stage-2 -d build/ src/",
     "prepublishOnly": "npm run build"
   },
   "swapDep": {
@@ -35,12 +36,14 @@
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-core": "^6.16.0",
-    "babel-eslint": "^7.0.0",
-    "babel-preset-latest": "^6.16.0",
+    "babel-eslint": "^8.2.3",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.17.0",
-    "eslint": "^3.6.1",
-    "eslint-config-standard": "^6.1.0",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.3.0",
-    "eslint-plugin-standard": "^2.0.0"
+    "eslint-plugin-standard": "^3.1.0"
   }
 }

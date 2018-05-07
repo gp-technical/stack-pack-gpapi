@@ -5,7 +5,7 @@ console.log()
 swap()
 
 function swap (dir) {
-  const path = __dirname
+  let path = __dirname
   if (dir) path += `/${dir}`
   const target = process.argv[2]
   exec(`sp-swap ${path} ${target}`, (error, stdout, stderr) => {
