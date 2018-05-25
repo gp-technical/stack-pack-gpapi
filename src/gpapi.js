@@ -148,7 +148,9 @@ const attachGetProfileFromToken = async ({ apiUrl }) => {
       token: userToken
     }
     if (user.SubscriptionId) {
-      const hierarchy = await request.get(`${process.env.API_ROOT}/hierarchy/subscription/${user.SubscriptionId}/${userToken}`)
+      const hierarchy = await request.get(
+        `${process.env.API_ROOT}/hierarchy/subscription/${user.SubscriptionId}/${userToken}`
+      )
       profile.client = { id: hierarchy.ClientId, name: hierarchy.ClientName }
       profile.subscription = { id: hierarchy.SubscriptionId, name: hierarchy.SubscriptionName }
     }

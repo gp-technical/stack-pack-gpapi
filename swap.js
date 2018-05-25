@@ -4,7 +4,7 @@ console.log()
 
 swap()
 
-function swap (dir) {
+function swap(dir) {
   let path = __dirname
   if (dir) path += `/${dir}`
   const target = process.argv[2]

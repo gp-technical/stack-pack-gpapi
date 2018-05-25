@@ -11,10 +11,11 @@
   },
   "main": "build/index.js",
   "scripts": {
-    "lint": "eslint *.js src",
+    "lint": "sp-lint",
     "build": "babel --presets env,stage-2 -d build/ src/",
     "prepublishOnly": "npm run build"
   },
+  "standard-engine": "@gp-technical/stack-pack-dev",
   "swapDep": {
     "local": {
       "dep": {
@@ -34,16 +35,11 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "@gp-technical/stack-pack-dev": "../stack-pack-dev",
     "babel-cli": "^6.16.0",
     "babel-core": "^6.16.0",
     "babel-eslint": "^8.2.3",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-stage-2": "^6.17.0",
-    "eslint": "^4.19.1",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.3.0",
-    "eslint-plugin-standard": "^3.1.0"
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.17.0"
   }
 }
