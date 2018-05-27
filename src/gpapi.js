@@ -157,6 +157,9 @@ const handshake = async opts => {
   } catch (inner) {
     const err = new Error('A call to the GP API has failed')
     err.inner = inner
+    if (process.env.GP_KEEP_PROCESS_ON_CONNECTION_ERROR !== 'true') {
+      process.kill()
+    }
     throw err
   }
 }
