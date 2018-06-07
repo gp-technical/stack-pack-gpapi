@@ -1,7 +1,7 @@
 {
   "name": "stack-pack-gpapi",
   "description": "A GP stack package that provides secure access to the main GP API",
-  "version": "2.0.0",
+  "version": "2.0.0-beta.1",
   "author": "GoodPractice",
   "license": "UNLICENSED",
   "homepage": "https://github.com/gp-technical/stack-pack-gpapi",
@@ -18,11 +18,11 @@
   },
   "standard-engine": "@gp-technical/stack-pack-standard",
   "dependencies": {
-    "stack-pack-request": "2.0.0",
+    "stack-pack-request": "^1.1.8",
     "winston": "^2.3.1"
   },
   "devDependencies": {
-    "@gp-technical/stack-pack-standard": "^1.1.0",
+    "@gp-technical/stack-pack-standard": "^1.2.0",
     "babel-cli": "^6.16.0",
     "babel-core": "^6.16.0",
     "babel-preset-env": "^1.7.0",
