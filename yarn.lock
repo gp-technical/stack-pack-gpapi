@@ -992,8 +992,8 @@ callsites@^0.2.0:
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-0.2.0.tgz#afab96262910a7f33c19a5775825c69f34e350ca"
 
 caniuse-lite@^1.0.30000844:
-  version "1.0.30000850"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000850.tgz#e68a88db4ea598b4c33b8419f7385473e4802495"
+  version "1.0.30000851"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000851.tgz#3b498aebf9f92cf6cff4ab54d13b557c0b590533"
 
 caseless@~0.11.0:
   version "0.11.0"
@@ -3657,9 +3657,9 @@ sshpk@^1.7.0:
     jsbn "~0.1.0"
     tweetnacl "~0.14.0"
 
-stack-pack-request@^1.1.8:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/stack-pack-request/-/stack-pack-request-1.1.8.tgz#06742595f689127ca69d63f4a70d7e1d2a9f602d"
+stack-pack-request@^2.0.0-beta.1:
+  version "2.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/stack-pack-request/-/stack-pack-request-2.0.0-beta.1.tgz#f1ed29ad6d379f3f30e6958b659f313e0b0be39f"
   dependencies:
     unirest "^0.5.1"
     winston "^2.3.1"
