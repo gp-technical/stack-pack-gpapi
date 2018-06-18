@@ -3657,9 +3657,9 @@ sshpk@^1.7.0:
     jsbn "~0.1.0"
     tweetnacl "~0.14.0"
 
-stack-pack-request@^2.0.0-beta.1:
-  version "2.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/stack-pack-request/-/stack-pack-request-2.0.0-beta.1.tgz#f1ed29ad6d379f3f30e6958b659f313e0b0be39f"
+stack-pack-request@2.0.0-beta.2:
+  version "2.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/stack-pack-request/-/stack-pack-request-2.0.0-beta.2.tgz#3ea2ac49d55024ab895c69ba0cba29c52131ddb2"
   dependencies:
     unirest "^0.5.1"
     winston "^2.3.1"
