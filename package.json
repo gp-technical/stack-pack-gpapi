@@ -1,7 +1,7 @@
 {
   "name": "stack-pack-gpapi",
   "description": "A GP stack package that provides secure access to the main GP API",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-beta.4",
   "author": "GoodPractice",
   "license": "UNLICENSED",
   "homepage": "https://github.com/gp-technical/stack-pack-gpapi",
@@ -13,20 +13,16 @@
   "scripts": {
     "lint": "sp-lint",
     "precommit": "sp-lint-staged",
-    "build:debug": "yarn build --watch --source-maps inline",
-    "build": "babel --presets env,stage-2 -d build/ src/",
+    "build:debug": "sp-build-debug",
+    "build": "sp-build",
     "prepublishOnly": "yarn build"
   },
   "standard-engine": "@gp-technical/stack-pack-standard",
   "dependencies": {
-    "stack-pack-request": "2.0.0-beta.2",
-    "winston": "^2.3.1"
+    "stack-pack-request": "2.0.0-beta.3",
+    "winston": "2.4.3"
   },
   "devDependencies": {
-    "@gp-technical/stack-pack-standard": "^1.2.0",
-    "babel-cli": "^6.16.0",
-    "babel-core": "^6.16.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-2": "^6.17.0"
+    "@gp-technical/stack-pack-standard": "^2.1.0-beta.4"
   }
 }
