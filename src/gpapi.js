@@ -7,12 +7,20 @@ var handshakeRequired = true
 
 const attachProxy = opts => {
   const { app, apiUrl } = opts
+  
+  /* Default to /gpapi */
+  let middlewarePath = '/gpapi';
+  
+  /* allow mounting the middleware on different paths such as /gp or /api */
+  if (typeof opts['middlewarePath'] !== "undefined") {
+    middlewarePath = opts['middlewarePath'];
+  }
 
   app.use('/gpapi/ping', async (req, res, next) => {
     res.send(`The GPAPI proxy is alive and relaying to: ${apiUrl}`)
   })
 
-  app.use('/gpapi', async (req, res, next) => {
+  app.use(middlewarePath, async (req, res, next) => {
     try {
       await ensureApplicationToken(opts)
       await ensureUserToken(opts)
