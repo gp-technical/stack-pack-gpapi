@@ -31,10 +31,24 @@ const attachProxy = opts => {
           throw new Error(`The requested method is not supported: ${req.method}`)
       }
     } catch (inner) {
-      const err = new Error('GP API proxy call failed.')
-      err.inner = inner
-      winston.error(util.inspect(err))
-      res.sendStatus(err.inner.StatusCode)
+      if (inner.Name === 'NoUserForToken') {
+        try {
+          await resetUserToken(opts)
+          return app._router.handle(req, res, next)
+        } catch (err) {
+          if (err.Name === 'NoApplicationForToken') {
+            await setTokens(opts)
+            return app._router.handle(req, res, next)
+          } else {
+            throw err
+          }
+        }
+      } else {
+        const err = new Error('GP API proxy call failed.')
+        err.inner = inner
+        winston.error(util.inspect(err))
+        res.sendStatus(err.inner.StatusCode)
+      }
     }
   })
 }
@@ -46,29 +60,9 @@ const ensureApplicationToken = async opts => {
 }
 
 const ensureUserToken = async opts => {
-  const { app, apiUrl } = opts
-  var url = `${apiUrl}/security/validate/user`
-  const payload = {
-    ApplicationToken: app.get('application-token'),
-    UserToken: app.get('user-token')
-  }
-  try {
-    await request.post(url, payload)
-  } catch (err) {
-    if (err.Name === 'NoUserForToken') {
-      try {
-        await resetUserToken(opts)
-      } catch (err) {
-        if (err.Name === 'NoApplicationForToken') {
-          await setTokens(opts)
-        } else {
-          throw err
-        }
-      }
-    } else {
-      throw err
-    }
-  }
+  const { app } = opts
+  if (app.get('user-token')) return
+  await setUserToken(opts)
 }
 
 const getQueryString = url => {
