@@ -1,7 +1,7 @@
 {
   "name": "stack-pack-gpapi",
   "description": "A GP stack package that provides secure access to the main GP API",
-  "version": "2.0.0",
+  "version": "2.0.1-beta.5",
   "author": "GoodPractice",
   "license": "UNLICENSED",
   "homepage": "https://github.com/gp-technical/stack-pack-gpapi",
