@@ -1,7 +1,6 @@
 import request from 'stack-pack-request'
+import { log } from '@gp-technical/stack-pack-util'
 import crypto from 'crypto'
-import winston from 'winston'
-import util from 'util'
 
 var handshakeRequired = true
 
@@ -31,10 +30,8 @@ const attachProxy = opts => {
           throw new Error(`The requested method is not supported: ${req.method}`)
       }
     } catch (inner) {
-      const err = new Error('GP API proxy call failed.')
-      err.inner = inner
-      winston.error(util.inspect(err))
-      res.sendStatus(err.inner.StatusCode)
+      log.error(inner, 'GP API proxy call failed.')
+      res.sendStatus(inner.StatusCode)
     }
   })
 }
@@ -79,7 +76,7 @@ const setTokens = async opts => {
   const health = await apiCheck()
   const applicationToken = await setApplicationToken(opts)
   const userToken = await setUserToken(opts)
-  winston.info(`GP API
+  log.logger().info(`GP API
       - api-url     : ${health.url}
       - api-ping    : ${health.ping}
       - db-check    : ${health.db}
@@ -114,7 +111,7 @@ const setUserToken = async ({ app, apiUrl, keyAdmin }) => {
 
 const resetUserToken = async opts => {
   const token = await setUserToken(opts)
-  winston.info(`GP API - reset user-token = ${token}`)
+  log.logger().info(`GP API - reset user-token = ${token}`)
 }
 
 var apiCheck

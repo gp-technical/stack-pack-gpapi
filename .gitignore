@@ -3,3 +3,4 @@ build
 *.log*
 *.swp
 *.env
+save-commands.json
