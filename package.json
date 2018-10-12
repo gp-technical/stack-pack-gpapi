@@ -1,7 +1,7 @@
 {
   "name": "stack-pack-gpapi",
   "description": "A GP stack package that provides secure access to the main GP API",
-  "version": "1.1.8",
+  "version": "2.0.1-beta.5",
   "author": "GoodPractice",
   "license": "UNLICENSED",
   "homepage": "https://github.com/gp-technical/stack-pack-gpapi",
@@ -11,36 +11,18 @@
   },
   "main": "build/index.js",
   "scripts": {
-    "build": "babel --presets latest,stage-2 -d build/ src/",
-    "prepublishOnly": "npm run build"
+    "lint": "sp-lint",
+    "precommit": "sp-lint-staged",
+    "build:debug": "sp-build-debug",
+    "build": "sp-build",
+    "prepublishOnly": "yarn build"
   },
-  "swapDep": {
-    "local": {
-      "dep": {
-        "stack-pack-request": "file:../stack-pack-request"
-      },
-      "dev": {}
-    },
-    "published": {
-      "dep": {
-        "stack-pack-request": "1.1.8"
-      },
-      "dev": {}
-    }
-  },
+  "standard-engine": "@gp-technical/stack-pack-standard",
   "dependencies": {
-    "stack-pack-request": "1.1.8",
-    "winston": "^2.3.1"
+    "stack-pack-request": "2.0.0",
+    "winston": "2.4.3"
   },
   "devDependencies": {
-    "babel-cli": "^6.16.0",
-    "babel-core": "^6.16.0",
-    "babel-eslint": "^7.0.0",
-    "babel-preset-latest": "^6.16.0",
-    "babel-preset-stage-2": "^6.17.0",
-    "eslint": "^3.6.1",
-    "eslint-config-standard": "^6.1.0",
-    "eslint-plugin-promise": "^3.3.0",
-    "eslint-plugin-standard": "^2.0.0"
+    "@gp-technical/stack-pack-standard": "^2.1.0"
   }
 }
