@@ -4392,10 +4392,10 @@ sshpk@^1.7.0:
     jsbn "~0.1.0"
     tweetnacl "~0.14.0"
 
-stack-pack-request@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/stack-pack-request/-/stack-pack-request-2.0.1.tgz#1eef45765f5b70be64566bcfc0d23b54dfb67d3e"
-  integrity sha512-XK4ZNJTOvIsHCVg9ExVNgEDEUMIteCclp7s6NmvDtteUNN7Vo5P8MSgYyCcfXePe8GG4Z5DumZWTwJyGfY7bmA==
+stack-pack-request@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/stack-pack-request/-/stack-pack-request-2.1.0.tgz#c307ed95dc720402633539703b56adced5f60d98"
+  integrity sha512-WKDMqT6UUNxYN6LwCNb92ltEauYHiZxxDLUYGU52ZbAe3mXIUXBQ4GEjGsxrbocW8lqbOe3KSp22KdhCmywLTQ==
   dependencies:
     unirest "^0.5.1"
 

@@ -20,7 +20,7 @@
   "standard-engine": "@gp-technical/stack-pack-standard",
   "dependencies": {
     "@gp-technical/stack-pack-util": "^2.0.0",
-    "stack-pack-request": "2.0.1"
+    "stack-pack-request": "2.1.0"
   },
   "devDependencies": {
     "@gp-technical/stack-pack-standard": "^2.3.5"
