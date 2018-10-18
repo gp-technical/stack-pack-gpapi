@@ -114,10 +114,10 @@ const attachCheck = async ({ apiUrl }) => {
     return {
       url: apiUrl,
       ping: await request.get(`${apiUrl}/`, {
-        timeout: parseInt(process.env.GPAPI_TIMEOUT) || 3000
+        timeout: parseInt(process.env.GP_API_TIMEOUT) || 3000
       }),
       db: await request.get(`${apiUrl}/db-check`, {
-        timeout: parseInt(process.env.GPAPI_TIMEOUT) || 10000
+        timeout: parseInt(process.env.GP_API_TIMEOUT) || 10000
       })
     }
   }
@@ -139,9 +139,7 @@ const attachGetProfileFromToken = async ({ apiUrl }) => {
       token: userToken
     }
     if (user.SubscriptionId) {
-      const hierarchy = await request.get(
-        `${process.env.API_ROOT}/hierarchy/subscription/${user.SubscriptionId}/${userToken}`
-      )
+      const hierarchy = await get(`/hierarchy/subscription/${user.SubscriptionId}`)
       profile.client = { id: hierarchy.ClientId, name: hierarchy.ClientName }
       profile.subscription = { id: hierarchy.SubscriptionId, name: hierarchy.SubscriptionName }
     }
