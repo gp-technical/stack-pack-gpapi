@@ -11,7 +11,7 @@ const attachProxy = opts => {
     res.send(`The GPAPI proxy is alive and relaying to: ${apiUrl}`)
   })
 
-  app.use('/gpapi', async (req, res, next) => {
+  const gpapiProxy = async (req, res, next) => {
     try {
       await ensureApplicationToken(opts)
       await ensureUserToken(opts)
@@ -33,11 +33,11 @@ const attachProxy = opts => {
       if (inner.Name === 'NoUserForToken') {
         try {
           await resetUserToken(opts)
-          return app._router.handle(req, res, next)
+          gpapiProxy(req, res, next)
         } catch (err) {
           if (err.Name === 'NoApplicationForToken') {
             await setTokens(opts)
-            return app._router.handle(req, res, next)
+            gpapiProxy(req, res, next)
           } else {
             throw err
           }
@@ -47,7 +47,9 @@ const attachProxy = opts => {
         res.sendStatus(inner.StatusCode)
       }
     }
-  })
+  }
+
+  app.use('/gpapi', gpapiProxy)
 }
 
 const ensureApplicationToken = async opts => {
