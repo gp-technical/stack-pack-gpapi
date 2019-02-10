@@ -4347,10 +4347,10 @@ sshpk@^1.7.0:
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
 
-stack-pack-request@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/stack-pack-request/-/stack-pack-request-2.1.4.tgz#738d7c9f5b964c03edb2fee0e9830605b833c4b2"
-  integrity sha512-1sJQxTI9xzGnLxRIdbTkmcNM8/GGOJdhxGpJV6+1XEhL1RCY1n5cG3L8VlSj/pD6f1nm+N/Fftjl9ydxMQ1uoQ==
+stack-pack-request@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/stack-pack-request/-/stack-pack-request-2.2.0.tgz#1331aefe7761d7f36d594ac0549a5284defcc613"
+  integrity sha512-WDeaMKaxPrqRwr9UnwhFeSP5DtW3MTlKVsWG0zhLlnkSyW3pw7RtiF9UrkyuRjBWA/QSHBHTB+2X8w2KsHpM9Q==
   dependencies:
     unirest "^0.5.1"
 

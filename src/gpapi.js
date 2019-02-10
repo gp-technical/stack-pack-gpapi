@@ -18,7 +18,11 @@ const attachProxy = opts => {
       var url = `${apiUrl}${req.path}/${app.get('user-token')}`
       switch (req.method) {
         case 'POST':
-          const resPost = await request.post(url, req.body)
+          const resPost = await request.postJson(url, req.body, {
+            headers: {
+              'Content-type': 'application/json'
+            }
+          })
           res.send(resPost)
           break
         case 'GET':
@@ -182,6 +186,7 @@ const post = async (path, payload, opts) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
+
   return request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, opts)
 }
 
