@@ -48,7 +48,7 @@ const attachProxy = opts => {
         }
       } else {
         log.error(inner, 'GP API proxy call failed.')
-        res.sendStatus(inner.StatusCode)
+        res.sendStatus(inner.StatusCode || 500)
       }
     }
   }
