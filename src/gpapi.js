@@ -175,18 +175,17 @@ const handshake = async opts => {
   }
 }
 
-const get = async (path, opts) => {
+const get = (path, opts) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
   return request.get(`${process.env.API_ROOT}/gpapi/${path}`, opts)
 }
 
-const post = async (path, payload, opts) => {
+const post = (path, payload, opts) => {
   if (path.startsWith('/')) {
     path = path.substring(1)
   }
-
   return request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, opts)
 }
 
