@@ -15,7 +15,6 @@ const attachProxy = opts => {
     res.send(`The GPAPI proxy is alive and relaying to: ${apiUrl}`)
   })
 
-  console.log('proxy DEFINED--------------------------')
   // local use without http call
   gpapiProxy = async ({ path, body, method, query }) => {
     try {
@@ -30,7 +29,6 @@ const attachProxy = opts => {
               'Content-type': 'application/json'
             }
           })
-          console.log(resPost)
           return resPost
         case 'GET':
           const resGet = await request.get(url)
@@ -164,7 +162,6 @@ const requiresHandshake = () => {
 
 const handshake = async opts => {
   try {
-    console.log('handshake!')
     attachCheck(opts)
     attachGetProfileFromToken(opts)
     attachProxy(opts)
