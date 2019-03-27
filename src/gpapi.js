@@ -1,8 +1,12 @@
 import request from 'stack-pack-request'
+import QueryString from 'querystring'
 import { log } from '@gp-technical/stack-pack-util'
 import crypto from 'crypto'
 
 var handshakeRequired = true
+
+// local use without http call
+var gpapiProxy
 
 const attachProxy = opts => {
   const { app, apiUrl } = opts
@@ -11,49 +15,48 @@ const attachProxy = opts => {
     res.send(`The GPAPI proxy is alive and relaying to: ${apiUrl}`)
   })
 
-  const gpapiProxy = async (req, res, next) => {
+  // local use without http call
+  gpapiProxy = async ({ path, body, method, query }) => {
     try {
       await ensureApplicationToken(opts)
       await ensureUserToken(opts)
-      var url = `${apiUrl}${req.path}/${app.get('user-token')}`
-      switch (req.method) {
+      var url = `${apiUrl}${path}/${app.get('user-token')}`
+      url += QueryString.stringify(query)
+      switch (method) {
         case 'POST':
-          const resPost = await request.postJson(url, req.body, {
+          const resPost = await request.postJson(url, body, {
             headers: {
               'Content-type': 'application/json'
             }
           })
-          res.send(resPost)
-          break
+          return resPost
         case 'GET':
-          url += `${getQueryString(req.url)}`
           const resGet = await request.get(url)
-          res.json(resGet)
-          break
+          return resGet
         default:
-          throw new Error(`The requested method is not supported: ${req.method}`)
+          throw new Error(`The requested method is not supported: ${method}`)
       }
     } catch (inner) {
       if (inner.Name === 'NoUserForToken') {
         try {
           await resetUserToken(opts)
-          gpapiProxy(req, res, next)
+          return gpapiProxy({ path, body, method, query })
         } catch (err) {
           if (err.Name === 'NoApplicationForToken') {
             await setTokens(opts)
-            gpapiProxy(req, res, next)
+            return gpapiProxy({ path, body, method, query })
           } else {
             throw err
           }
         }
       } else {
         log.error(inner, 'GP API proxy call failed.')
-        res.sendStatus(inner.StatusCode || 500)
+        throw new Error(inner.StatusCode || 500)
       }
     }
   }
 
-  app.use('/gpapi', gpapiProxy)
+  // app.use('/gpapi', gpapiProxy)
 }
 
 const ensureApplicationToken = async opts => {
@@ -66,10 +69,6 @@ const ensureUserToken = async opts => {
   const { app } = opts
   if (app.get('user-token')) return
   await setUserToken(opts)
-}
-
-const getQueryString = url => {
-  return url.indexOf('?') > -1 ? `?${url.substr(url.indexOf('?') + 1)}` : ''
 }
 
 const setTokens = async opts => {
@@ -176,17 +175,17 @@ const handshake = async opts => {
 }
 
 const get = (path, opts) => {
-  if (path.startsWith('/')) {
-    path = path.substring(1)
+  if (!path.startsWith('/')) {
+    path = `/${path}`
   }
-  return request.get(`${process.env.API_ROOT}/gpapi/${path}`, opts)
+  return gpapiProxy({ path, method: 'GET', query: opts })
 }
 
 const post = (path, payload, opts) => {
-  if (path.startsWith('/')) {
-    path = path.substring(1)
+  if (!path.startsWith('/')) {
+    path = `/${path}`
   }
-  return request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, opts)
+  return gpapiProxy({ path, method: 'POST', body: payload, query: opts })
 }
 
 export default { handshake, requiresHandshake, get, post, check, getProfileFromToken }
