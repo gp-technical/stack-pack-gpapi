@@ -1,9 +1,13 @@
 import request from 'stack-pack-request'
+import QueryString from 'querystring'
 import crypto from 'crypto'
 import winston from 'winston'
 import util from 'util'
 
 var handshakeRequired = true
+
+// local use without http call
+var gpapiProxy
 
 const attachProxy = opts => {
   const { app, apiUrl } = opts
@@ -12,31 +16,30 @@ const attachProxy = opts => {
     res.send(`The GPAPI proxy is alive and relaying to: ${apiUrl}`)
   })
 
-  app.use('/gpapi', async (req, res, next) => {
+  // local use without http call
+  gpapiProxy = async ({ path, body, method, query }) => {
     try {
       await ensureApplicationToken(opts)
       await ensureUserToken(opts)
-      var url = `${apiUrl}${req.path}/${app.get('user-token')}`
-      switch (req.method) {
+      var url = `${apiUrl}${path}/${app.get('user-token')}`
+      url += QueryString.stringify(query)
+      switch (method) {
         case 'POST':
-          const resPost = await request.post(url, req.body)
-          res.send(resPost)
-          break
+          const resPost = await request.post(url, body)
+          return resPost
         case 'GET':
-          url += `${getQueryString(req.url)}`
           const resGet = await request.get(url)
-          res.json(resGet)
-          break
+          return resGet
         default:
-          throw new Error(`The requested method is not supported: ${req.method}`)
+          throw new Error(`The requested method is not supported: ${method}`)
       }
     } catch (inner) {
       const err = new Error('GP API proxy call failed.')
       err.inner = inner
       winston.error(util.inspect(err))
-      res.sendStatus(err.inner.StatusCode)
+      throw err
     }
-  })
+  }
 }
 
 const ensureApplicationToken = async opts => {
@@ -66,10 +69,6 @@ const ensureUserToken = async opts => {
       throw err
     }
   }
-}
-
-const getQueryString = url => {
-  return url.indexOf('?') > -1 ? `?${url.substr(url.indexOf('?') + 1)}` : ''
 }
 
 const setTokens = async opts => {
@@ -162,17 +161,17 @@ const handshake = async opts => {
 }
 
 const get = async (path, timeout) => {
-  if (path.startsWith('/')) {
-    path = path.substring(1)
+  if (!path.startsWith('/')) {
+    path = `/${path}`
   }
-  return await request.get(`${process.env.API_ROOT}/gpapi/${path}`, timeout)
+  return gpapiProxy({ path, method: 'GET' })
 }
 
 const post = async (path, payload, timeout) => {
-  if (path.startsWith('/')) {
-    path = path.substring(1)
+  if (!path.startsWith('/')) {
+    path = `/${path}`
   }
-  return await request.post(`${process.env.API_ROOT}/gpapi/${path}`, payload, timeout)
+  return gpapiProxy({ path, method: 'POST', body: payload })
 }
 
 export default { handshake, requiresHandshake, get, post, check, getProfileFromToken }
