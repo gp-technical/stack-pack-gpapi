@@ -21,7 +21,7 @@ const attachProxy = opts => {
       await ensureApplicationToken(opts)
       await ensureUserToken(opts)
       var url = `${apiUrl}${path}/${app.get('user-token')}`
-      url += QueryString.stringify(query)
+      url += `?${QueryString.stringify(query)}`
       switch (method) {
         case 'POST':
           const resPost = await request.postJson(url, body, {
