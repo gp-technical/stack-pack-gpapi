@@ -2,7 +2,6 @@ import request from 'stack-pack-request'
 import QueryString from 'querystring'
 import { log } from '@gp-technical/stack-pack-util'
 import crypto from 'crypto'
-var app = require.main.require('express')
 
 var handshakeRequired = true
 
@@ -11,7 +10,7 @@ var getGpapiProxy = () => {
   if (gpapiProxyInstance) {
     return gpapiProxyInstance
   }
-  var gpapiProxy = app.settings.gpapiProxy
+  var gpapiProxy = global.GPAPI_PROXY_INSTANCE
   if (gpapiProxy) {
     return gpapiProxy
   }
@@ -66,7 +65,7 @@ const attachProxy = opts => {
     }
   }
 
-  app.set('gpapiProxy', gpapiProxy)
+  global.GPAPI_PROXY_INSTANCE = gpapiProxy
   // deprecated
   // delete on major version change
   app.use('/gpapi', gpapiProxy)
