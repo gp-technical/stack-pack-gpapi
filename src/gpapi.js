@@ -5,8 +5,17 @@ import crypto from 'crypto'
 
 var handshakeRequired = true
 
-// local use without http call
-var gpapiProxy
+var gpapiProxyInstance
+var getGpapiProxy = () => {
+  if (gpapiProxyInstance) {
+    return gpapiProxyInstance
+  }
+  var gpapiProxy = global.GPAPI_PROXY_INSTANCE
+  if (gpapiProxy) {
+    return gpapiProxy
+  }
+  throw new Error('gpapiProxy is undefined')
+}
 
 const attachProxy = opts => {
   const { app, apiUrl } = opts
@@ -16,7 +25,7 @@ const attachProxy = opts => {
   })
 
   // local use without http call
-  gpapiProxy = async ({ path, body, method, query }) => {
+  var gpapiProxy = async ({ path, body, method, query }) => {
     try {
       await ensureApplicationToken(opts)
       await ensureUserToken(opts)
@@ -56,7 +65,10 @@ const attachProxy = opts => {
     }
   }
 
-  // app.use('/gpapi', gpapiProxy)
+  global.GPAPI_PROXY_INSTANCE = gpapiProxy
+  // deprecated
+  // delete on major version change
+  app.use('/gpapi', gpapiProxy)
 }
 
 const ensureApplicationToken = async opts => {
@@ -178,6 +190,7 @@ const get = (path, opts) => {
   if (!path.startsWith('/')) {
     path = `/${path}`
   }
+  var gpapiProxy = getGpapiProxy()
   return gpapiProxy({ path, method: 'GET', query: opts })
 }
 
@@ -185,6 +198,7 @@ const post = (path, payload, opts) => {
   if (!path.startsWith('/')) {
     path = `/${path}`
   }
+  var gpapiProxy = getGpapiProxy()
   return gpapiProxy({ path, method: 'POST', body: payload, query: opts })
 }
 
