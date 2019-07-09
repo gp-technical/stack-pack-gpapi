@@ -23,6 +23,8 @@
     "stack-pack-request": "2.3.1"
   },
   "devDependencies": {
-    "@gp-technical/stack-pack-standard": "^2.3.6"
+    "@gp-technical/stack-pack-standard": "^2.3.6",
+    "@gp-technical/eslint-config-stack": "^1.0.0",
+    "@gp-technical/stack-pack-app": "^2.0.2"
   }
 }
