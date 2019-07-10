@@ -11,12 +11,12 @@
   },
   "main": "build/index.js",
   "scripts": {
-    "lint": "eslint --ext .js,.jsx .",
     "precommit": "sp-lint-staged",
     "build:debug": "yarn lint && sp-build-debug",
+    "test": "echo no tests",
+    "lint": "eslint --ext .js,.jsx .",
     "build": "yarn lint && sp-build",
-    "prepublishOnly": "yarn build",
-    "test": "echo 'no tests'"
+    "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "@gp-technical/stack-pack-util": "^3.1.0",
