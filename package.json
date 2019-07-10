@@ -15,7 +15,7 @@
     "build:debug": "yarn lint && sp-build-debug",
     "test": "echo no tests",
     "lint": "eslint --ext .js,.jsx .",
-    "build": "sp-build",
+    "build": "yarn lint && sp-build",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
