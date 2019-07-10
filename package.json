@@ -11,20 +11,17 @@
   },
   "main": "build/index.js",
   "scripts": {
-    "lint": "sp-lint",
+    "lint": "eslint --ext .js,.jsx .",
     "precommit": "sp-lint-staged",
-    "build:debug": "sp-build-debug",
-    "build": "sp-build",
+    "build:debug": "yarn lint && sp-build-debug",
+    "build": "yarn lint && sp-build",
     "prepublishOnly": "yarn build"
   },
-  "standard-engine": "@gp-technical/stack-pack-standard",
   "dependencies": {
     "@gp-technical/stack-pack-util": "^3.1.0",
     "stack-pack-request": "2.3.1"
   },
   "devDependencies": {
-    "@gp-technical/stack-pack-standard": "^2.3.6",
-    "@gp-technical/eslint-config-stack": "^1.0.0",
-    "@gp-technical/stack-pack-app": "^2.0.2"
+    "@gp-technical/eslint-config-stack": "^1.2.0"
   }
 }
