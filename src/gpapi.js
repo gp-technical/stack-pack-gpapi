@@ -112,7 +112,7 @@ const setApplicationToken = async ({ app, apiUrl, keyPublic, keyPrivate }) => {
   return app.get('application-token')
 }
 
-const setUserToken = async ({ app, apiUrl, keyAdmin }) => {
+const setUserToken = async ({ app, apiUrl }) => {
   var url = `${apiUrl}/security/login/application/gpapi`
   const payload = { ApplicationToken: app.get('application-token') }
   const { token } = await request.post(url, payload)
@@ -146,7 +146,7 @@ const check = async () => {
 
 var apiGetProfileFromToken
 const attachGetProfileFromToken = async ({ apiUrl }) => {
-  apiGetProfileFromToken = async (app, userToken) => {
+  apiGetProfileFromToken = async userToken => {
     const user = await request.get(`${apiUrl}/security/login/user/token/${userToken}`)
     const profile = {
       nameId: user.Id,
@@ -164,8 +164,8 @@ const attachGetProfileFromToken = async ({ apiUrl }) => {
   }
 }
 
-const getProfileFromToken = async (app, userToken) => {
-  return apiGetProfileFromToken(app, userToken)
+const getProfileFromToken = async userToken => {
+  return apiGetProfileFromToken(userToken)
 }
 
 const requiresHandshake = () => {

@@ -1,7 +1,7 @@
 {
   "name": "stack-pack-gpapi",
   "description": "A GP stack package that provides secure access to the main GP API",
-  "version": "2.4.2",
+  "version": "3.0.0",
   "author": "GoodPractice",
   "license": "UNLICENSED",
   "homepage": "https://github.com/gp-technical/stack-pack-gpapi",
@@ -10,6 +10,7 @@
     "url": "https://github.com/gp-technical/stack-pack-gpapi"
   },
   "main": "build/index.js",
+  "types": "build/types/index.d.ts",
   "scripts": {
     "build:debug": "yarn lint && sp-build-debug",
     "lint": "eslint --ext .js,.jsx .",
