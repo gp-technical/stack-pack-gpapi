@@ -25,11 +25,12 @@ const attachProxy = opts => {
   })
 
   // local use without http call
-  var gpapiProxy = async ({ path, body, method, query }) => {
+  var gpapiProxy = async ({ path, body, method, query, withToken = true }) => {
     try {
       await ensureApplicationToken(opts)
       await ensureUserToken(opts)
-      var url = `${apiUrl}${path}/${app.get('user-token')}`
+      let url = `${apiUrl}${path}`
+      if (withToken) url += `/${app.get('user-token')}`
       url += `?${QueryString.stringify(query)}`
       switch (method) {
         case 'POST':
@@ -186,20 +187,24 @@ const handshake = async opts => {
   }
 }
 
+const fixPath = path => (!path.startsWith('/') ? `/${path}` : path)
+
 const get = (path, opts) => {
-  if (!path.startsWith('/')) {
-    path = `/${path}`
-  }
-  var gpapiProxy = getGpapiProxy()
+  path = fixPath(path)
+  const gpapiProxy = getGpapiProxy()
   return gpapiProxy({ path, method: 'GET', query: opts })
 }
 
+const getNoToken = (path, opts) => {
+  path = fixPath(path)
+  const gpapiProxy = getGpapiProxy()
+  return gpapiProxy({ path, method: 'GET', query: opts, withToken: false })
+}
+
 const post = (path, payload, opts) => {
-  if (!path.startsWith('/')) {
-    path = `/${path}`
-  }
-  var gpapiProxy = getGpapiProxy()
+  path = fixPath(path)
+  const gpapiProxy = getGpapiProxy()
   return gpapiProxy({ path, method: 'POST', body: payload, query: opts })
 }
 
-export default { handshake, requiresHandshake, get, post, check, getProfileFromToken }
+export default { handshake, requiresHandshake, get, getNoToken, post, check, getProfileFromToken }

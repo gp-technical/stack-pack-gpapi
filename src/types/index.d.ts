@@ -51,6 +51,7 @@ declare module 'stack-pack-gpapi' {
   export function handshake(handshakeOpts:HandshakeOpts) : Promise<null>;
   export function requiresHandshake(): boolean;
   export function get<T>(url:string, queryParams?:QueryParams) : Promise<T>;
+  export function getNoToken<T>(url:string, queryParams?:QueryParams) : Promise<T>;
   export function post<T>(url:string, payload?:Payload, queryParams?: QueryParams) : Promise<T>;
   export function check() : Promise<CheckResult>;
   export function getProfileFromToken(userToken:string) : Promise<UserProfile>
