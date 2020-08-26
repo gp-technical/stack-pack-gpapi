@@ -103,7 +103,12 @@ const setApplicationToken = async ({ app, apiUrl, keyPublic, keyPrivate }) => {
   const secret = Buffer.from(keyPrivate, 'utf-8')
   const vector = Buffer.from(IV, 'base64')
   const encrypted = Buffer.from(Token, 'base64')
-  const decipher = crypto.createDecipheriv('des3', secret, vector)
+  let decipher
+  if (crypto.getCiphers().includes('des3')) {
+    decipher = crypto.createDecipheriv('des3', secret, vector)
+  } else {
+    decipher = crypto.createDecipheriv('des-ede3-cbc', secret, vector)
+  }
   let decrypted = decipher.update(encrypted, 'binary', 'ascii')
   decrypted += decipher.final('ascii')
   const application = await request.get(
