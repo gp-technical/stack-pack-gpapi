@@ -36,12 +36,15 @@ const attachProxy = opts => {
         case 'POST':
           const resPost = await request.postJson(url, body, {
             headers: {
-              'Content-type': 'application/json'
+              'Content-type': 'application/json',
+              Authorization: app.get('user-token')
             }
           })
           return resPost
         case 'GET':
-          const resGet = await request.get(url)
+          const resGet = await request.get(url, {
+            headers: { Authorization: app.get('user-token') }
+          })
           return resGet
         default:
           throw new Error(`The requested method is not supported: ${method}`)
